@@ -21,5 +21,5 @@ class KaraokeController(@Autowired private val karaokeRepository: KaraokeReposit
             }.orElse(ResponseEntity.notFound().build())
 
     @GetMapping()
-    fun getAllJournals(): List<Karaoke> = karaokeRepository.findAll()
+    fun getAllKaraokes(): List<Karaoke> = karaokeRepository.findAll()
 }
