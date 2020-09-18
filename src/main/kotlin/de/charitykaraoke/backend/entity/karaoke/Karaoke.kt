@@ -10,8 +10,9 @@ data class Karaoke(
                 strategy = GenerationType.IDENTITY) val id: Int = 0,
         @get: NotBlank var name: String,
         var expired: Boolean = false,
+
         @OneToMany(mappedBy = "karaoke", fetch = FetchType.LAZY,
                 cascade = [CascadeType.ALL])
-        var attendees: List<Attendee> = listOf()
+        var attendees: List<Attendee>?
 ) {
 }

@@ -18,7 +18,7 @@ class AttendeeController(@Autowired private val attendeeRepository: AttendeeRepo
             karaokeRepository.findById(karaokeId).map { karaoke ->
                 attendee.karaoke = karaoke
                 attendeeRepository.save(attendee)
-                ResponseEntity.ok(attendee)
+                ResponseEntity.ok().build<Attendee>()
             }.orElse(ResponseEntity.notFound().build<Attendee>())
 
 }
