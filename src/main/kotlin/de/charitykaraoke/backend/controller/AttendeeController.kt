@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping()
 class AttendeeController(@Autowired private val attendeeRepository: AttendeeRepository, @Autowired private val karaokeRepository: KaraokeRepository) {
 
-    @PostMapping("/karaoke/{karaokeId}/attendee")
+    @PostMapping("api/karaoke/{karaokeId}/attendee")
     fun createAttendee(@PathVariable(value = "karaokeId") karaokeId: Int,
                        @RequestBody attendee: Attendee): ResponseEntity<Attendee> =
             karaokeRepository.findById(karaokeId).map { karaoke ->
