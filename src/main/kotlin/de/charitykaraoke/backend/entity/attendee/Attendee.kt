@@ -1,11 +1,13 @@
 package de.charitykaraoke.backend.entity.attendee
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import de.charitykaraoke.backend.entity.karaoke.Karaoke
 import de.charitykaraoke.backend.entity.song.Song
 import de.charitykaraoke.backend.entity.vote.Vote
 import javax.persistence.*
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity(name = "attendees")
 data class Attendee(
         @Id @GeneratedValue(

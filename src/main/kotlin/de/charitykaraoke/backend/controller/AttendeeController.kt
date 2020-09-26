@@ -20,5 +20,24 @@ class AttendeeController(@Autowired private val attendeeRepository: AttendeeRepo
                 attendeeRepository.save(attendee)
                 ResponseEntity.ok().build<Attendee>()
             }.orElse(ResponseEntity.notFound().build<Attendee>())
+    /*
+    @PostMapping("api/karaoke/karaoke/login")
+    fun login(@RequestBody login: Login): User
+*/
 
 }
+
+data class Login (
+    val username: String,
+    val password: String,
+    val karaokeId: String
+)
+
+data class User (
+    val name: String,
+    val id: String,
+    val karaokeId: String,
+    val isAdmin: Boolean,
+    val token: String
+)
+
