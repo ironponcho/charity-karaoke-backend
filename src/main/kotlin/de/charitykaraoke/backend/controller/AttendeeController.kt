@@ -6,6 +6,7 @@ import de.charitykaraoke.backend.entity.karaoke.KaraokeRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 
 @RestController
@@ -20,10 +21,16 @@ class AttendeeController(@Autowired private val attendeeRepository: AttendeeRepo
                 attendeeRepository.save(attendee)
                 ResponseEntity.ok().build<Attendee>()
             }.orElse(ResponseEntity.notFound().build<Attendee>())
-    /*
-    @PostMapping("api/karaoke/karaoke/login")
-    fun login(@RequestBody login: Login): User
-*/
+
+    @PostMapping("api/karaoke/{karaokeId}/login")
+    fun login(@RequestBody login: Login, @PathVariable(value = "karaokeId") karaokeId: Int) = User(
+            name = "Jonas",
+            id = UUID.randomUUID().toString(),
+            karaokeId = karaokeId.toString(),
+            isAdmin = true,
+            token = UUID.randomUUID().toString()
+    )
+
 
 }
 
