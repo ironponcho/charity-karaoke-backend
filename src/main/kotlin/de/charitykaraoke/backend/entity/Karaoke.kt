@@ -1,6 +1,6 @@
-package de.charitykaraoke.backend.entity.karaoke
+package de.charitykaraoke.backend.entity
 
-import de.charitykaraoke.backend.entity.attendee.Attendee
+import java.time.LocalDateTime
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
 
@@ -9,10 +9,10 @@ data class Karaoke(
         @Id @GeneratedValue(
                 strategy = GenerationType.IDENTITY) val id: Int = 0,
         @get: NotBlank var name: String,
+        var date: LocalDateTime,
         var expired: Boolean = false,
 
-        @OneToMany(mappedBy = "karaoke", fetch = FetchType.LAZY,
-                cascade = [CascadeType.ALL])
-        var attendees: List<Attendee>?
-) {
-}
+        @ManyToMany(fetch = FetchType.LAZY, mappedBy = "karaoke")
+        var users: List<User>?
+
+)

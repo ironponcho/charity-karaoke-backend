@@ -1,13 +1,13 @@
 package de.charitykaraoke.backend.controller
 
-import de.charitykaraoke.backend.entity.karaoke.Karaoke
-import de.charitykaraoke.backend.entity.karaoke.KaraokeRepository
+import de.charitykaraoke.backend.entity.Karaoke
+import de.charitykaraoke.backend.repository.KaraokeRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/karaoke")
+@RequestMapping("/karaoke")
 class KaraokeController(@Autowired private val karaokeRepository: KaraokeRepository) {
 
     @PostMapping()
