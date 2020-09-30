@@ -16,3 +16,9 @@ Liquibase run migrations on application startup
 To build this application in Docker run:
 
 `./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=charity-karaoke-backend` 
+
+### Api
+
+#### Json
+
+Requests and Response should be convenient to [google's json styleguide](https://google.github.io/styleguide/jsoncstyleguide.xml).
