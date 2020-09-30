@@ -6,8 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest
 @SpringBootTest
 class BackendApplicationTests {
 
-    @Test
-    fun contextLoads() {
-    }
+// Todo: integration testing with running database
+//    @Test
+//    fun contextLoads() {
+//    }
 
 }

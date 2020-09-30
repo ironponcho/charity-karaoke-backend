@@ -11,3 +11,8 @@ docker-compose.yml file will bring up the required postgresql server for develop
 
 Liquibase run migrations on application startup
  
+### Docker
+
+To build this application in Docker run:
+
+`./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=charity-karaoke-backend` 
