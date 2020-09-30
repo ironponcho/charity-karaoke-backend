@@ -20,12 +20,12 @@ class KaraokeController(@Autowired private val karaokeRepository: KaraokeReposit
     @GetMapping("/{karaokeId}")
     fun getKaraokeById(@PathVariable karaokeId: Int): ResponseEntity<Karaoke> =
 
-            karaokeRepository.findById(karaokeId).map {
+        karaokeRepository.findById(karaokeId).map {
 //                    if (principal == null) {
 //                        it.attendees = emptyList()
 //                    }
-                ResponseEntity.ok(it)
-            }.orElse(ResponseEntity.notFound().build())
+            ResponseEntity.ok(it)
+        }.orElse(ResponseEntity.notFound().build())
 
     @GetMapping()
     fun getAllKaraokes(): List<Karaoke> = karaokeRepository.findAll()

@@ -17,7 +17,7 @@ class KaraokeUserDetailService(@Autowired var userRepository: UserRepository) : 
     @Throws(UsernameNotFoundException::class)
     override fun loadUserByUsername(username: String): UserDetails {
         val user: User = userRepository.findByUsername(username)
-                .orElseThrow { UsernameNotFoundException("User Not Found with username: $username") }
+            .orElseThrow { UsernameNotFoundException("User Not Found with username: $username") }
         return KaraokeUserDetails.build(user)
     }
 }

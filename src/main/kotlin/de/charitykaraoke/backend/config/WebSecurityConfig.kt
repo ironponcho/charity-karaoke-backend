@@ -37,7 +37,8 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     public override fun configure(authenticationManagerBuilder: AuthenticationManagerBuilder) {
-        authenticationManagerBuilder.userDetailsService<UserDetailsService>(userDetailsService).passwordEncoder(passwordEncoder())
+        authenticationManagerBuilder.userDetailsService<UserDetailsService>(userDetailsService)
+            .passwordEncoder(passwordEncoder())
     }
 
 
@@ -56,12 +57,12 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         //Todo: proper cors and csrf setup
         http.cors().and().csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/auth/**").permitAll()
-                .antMatchers("/health").permitAll()
-                .antMatchers(HttpMethod.GET, "/karaoke/**").permitAll()
-                .anyRequest().authenticated()
+            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .authorizeRequests().antMatchers("/auth/**").permitAll()
+            .antMatchers("/health").permitAll()
+            .antMatchers(HttpMethod.GET, "/karaoke/**").permitAll()
+            .anyRequest().authenticated()
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter::class.java)
     }
 }

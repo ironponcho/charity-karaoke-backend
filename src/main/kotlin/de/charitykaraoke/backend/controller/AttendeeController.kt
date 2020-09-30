@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping()
-class AttendeeController(@Autowired private val userRepository: UserRepository, @Autowired private val karaokeRepository: KaraokeRepository) {
+class AttendeeController(
+    @Autowired private val userRepository: UserRepository,
+    @Autowired private val karaokeRepository: KaraokeRepository
+) {
 
 //    @PostMapping("/karaoke/{karaokeId}/attendee")
 //    fun createAttendee(@PathVariable(value = "karaokeId") karaokeId: Int,

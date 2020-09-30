@@ -41,7 +41,13 @@ class DatabaseSeeder {
 
     private fun seedAdminUserTable() {
         if (!userRepository.existsByUsername("admin")) {
-            userRepository.save(User(username = "admin", password = encoder.encode("password"), roles = listOf(Role(1, "ROLE_ADMIN"), Role(2, "ROLE_USER"))))
+            userRepository.save(
+                User(
+                    username = "admin",
+                    password = encoder.encode("password"),
+                    roles = listOf(Role(1, "ROLE_ADMIN"), Role(2, "ROLE_USER"))
+                )
+            )
         }
     }
 

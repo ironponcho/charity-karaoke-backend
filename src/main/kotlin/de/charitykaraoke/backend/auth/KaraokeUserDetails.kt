@@ -8,8 +8,10 @@ import org.springframework.security.core.userdetails.UserDetails
 import java.util.stream.Collectors
 
 
-class KaraokeUserDetails(val id: Int, private val name: String, @field:JsonIgnore private val password: String,
-                         private val authorities: Collection<GrantedAuthority>) : UserDetails {
+class KaraokeUserDetails(
+    val id: Int, private val name: String, @field:JsonIgnore private val password: String,
+    private val authorities: Collection<GrantedAuthority>
+) : UserDetails {
 
     override fun getAuthorities(): Collection<GrantedAuthority> {
         return authorities
@@ -50,13 +52,13 @@ class KaraokeUserDetails(val id: Int, private val name: String, @field:JsonIgnor
         private const val serialVersionUID = 1L
         fun build(user: User): KaraokeUserDetails {
             val authorities: List<GrantedAuthority> = user.roles.stream()
-                    .map { role -> SimpleGrantedAuthority(role.name) }
-                    .collect(Collectors.toList())
+                .map { role -> SimpleGrantedAuthority(role.name) }
+                .collect(Collectors.toList())
             return KaraokeUserDetails(
-                    user.id,
-                    user.username,
-                    user.password,
-                    authorities
+                user.id,
+                user.username,
+                user.password,
+                authorities
             )
         }
     }

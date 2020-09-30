@@ -7,7 +7,8 @@ import javax.persistence.Id
 
 @Entity(name = "roles")
 data class Role(
-        @Id @GeneratedValue(
-                strategy = GenerationType.IDENTITY) val id: Int = 0,
-        var name: String
+    @Id @GeneratedValue(
+        strategy = GenerationType.IDENTITY
+    ) val id: Int = 0,
+    var name: String
 )

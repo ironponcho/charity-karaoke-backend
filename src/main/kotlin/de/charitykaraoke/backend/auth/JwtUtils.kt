@@ -19,11 +19,11 @@ class JwtUtils {
     fun generateJwtToken(authentication: Authentication): String {
         val userPrincipal: KaraokeUserDetails = authentication.principal as KaraokeUserDetails
         return Jwts.builder()
-                .setSubject(userPrincipal.username)
-                .setIssuedAt(Date())
-                .setExpiration(Date(Date().time + TimeUnit.MINUTES.toMillis(jwtExpiration)))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact()
+            .setSubject(userPrincipal.username)
+            .setIssuedAt(Date())
+            .setExpiration(Date(Date().time + TimeUnit.MINUTES.toMillis(jwtExpiration)))
+            .signWith(SignatureAlgorithm.HS512, jwtSecret)
+            .compact()
     }
 
     fun getUserNameFromJwtToken(token: String?): String {

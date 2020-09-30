@@ -16,7 +16,11 @@ import java.security.Principal
 
 @RestController
 @RequestMapping("/song")
-class SongController(@Autowired private val songRepository: SongRepository, @Autowired private val karaokeRepository: KaraokeRepository, @Autowired private val userRepository: UserRepository) {
+class SongController(
+    @Autowired private val songRepository: SongRepository,
+    @Autowired private val karaokeRepository: KaraokeRepository,
+    @Autowired private val userRepository: UserRepository
+) {
 
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_USER')")

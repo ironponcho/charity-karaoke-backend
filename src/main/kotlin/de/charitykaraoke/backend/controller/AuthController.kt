@@ -49,36 +49,47 @@ class AuthController {
     @PostMapping("/signin")
     fun authenticateUser(@RequestBody loginRequest: @Valid LoginRequest): ResponseEntity<*> {
         val authentication: Authentication = authenticationManager.authenticate(
-                UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password))
+            UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
+        )
         SecurityContextHolder.getContext().authentication = authentication
         val jwt = jwtUtils.generateJwtToken(authentication)
         val userDetails: KaraokeUserDetails = authentication.principal as KaraokeUserDetails
         val roles: List<String> = userDetails.authorities.stream()
-                .map { item -> item.authority }
-                .collect(Collectors.toList())
-        return ResponseEntity.ok(JwtResponse(jwt,
+            .map { item -> item.authority }
+            .collect(Collectors.toList())
+        return ResponseEntity.ok(
+            JwtResponse(
+                jwt,
                 userDetails.id,
                 userDetails.username,
-                roles))
+                roles
+            )
+        )
     }
 
     @PostMapping("/signup")
     fun registerUser(@RequestBody signupRequest: @Valid SignupRequest): ResponseEntity<*> {
         if (userRepository.existsByUsername(signupRequest.username)) {
             return ResponseEntity
-                    .badRequest()
-                    .body(MessageResponse("Error: Username is already taken!"))
+                .badRequest()
+                .body(MessageResponse("Error: Username is already taken!"))
         }
 
-        val optKaraoke = karaokeRepository.findById(signupRequest.karaoke_id)
+        val optKaraoke = karaokeRepository.findById(signupRequest.karaokeId)
 
         return if (optKaraoke.isPresent) {
-            userRepository.save(User(username = signupRequest.username, password = encoder.encode(signupRequest.password), karaoke = listOf(optKaraoke.get())))
+            userRepository.save(
+                User(
+                    username = signupRequest.username,
+                    password = encoder.encode(signupRequest.password),
+                    karaoke = listOf(optKaraoke.get())
+                )
+            )
             ResponseEntity.ok(MessageResponse("User registered successfully!"))
         } else {
             ResponseEntity
-                    .badRequest()
-                    .body(MessageResponse("Error: Karaoke not found!"))
+                .badRequest()
+                .body(MessageResponse("Error: Karaoke not found!"))
         }
 
     }
