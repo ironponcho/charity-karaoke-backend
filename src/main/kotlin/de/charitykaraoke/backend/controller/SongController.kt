@@ -23,7 +23,7 @@ class SongController(
 ) {
 
     @PostMapping()
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     fun createAttendee(principal: Principal, @RequestBody song: Song): ResponseEntity<Song> {
 
         val user = userRepository.findByUsername(principal.name).get()

@@ -31,11 +31,11 @@ class DatabaseSeeder {
     }
 
     private fun seedRoleTable() {
-        if (!roleRepository.existsByName(ERole.ROLE_ADMIN.toString())) {
-            roleRepository.save(Role(id = 1, name = ERole.ROLE_ADMIN.toString()))
+        if (!roleRepository.existsByName(ERole.ADMIN.toString())) {
+            roleRepository.save(Role(id = 1, name = ERole.ADMIN.toString()))
         }
-        if (!roleRepository.existsByName(ERole.ROLE_USER.toString())) {
-            roleRepository.save(Role(id = 2, name = ERole.ROLE_USER.toString()))
+        if (!roleRepository.existsByName(ERole.USER.toString())) {
+            roleRepository.save(Role(id = 2, name = ERole.USER.toString()))
         }
     }
 
@@ -45,7 +45,7 @@ class DatabaseSeeder {
                 User(
                     username = "admin",
                     password = encoder.encode("password"),
-                    roles = listOf(Role(1, "ROLE_ADMIN"), Role(2, "ROLE_USER"))
+                    roles = listOf(Role(1, "ADMIN"), Role(2, "USER"))
                 )
             )
         }

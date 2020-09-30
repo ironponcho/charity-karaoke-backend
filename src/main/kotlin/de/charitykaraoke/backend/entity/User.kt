@@ -23,7 +23,7 @@ data class User(
     )
 
     //Todo: Map enum to database representation
-    var roles: List<Role> = listOf(Role(2, "ROLE_USER")),
+    var roles: List<Role> = listOf(Role(2, "USER")),
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)

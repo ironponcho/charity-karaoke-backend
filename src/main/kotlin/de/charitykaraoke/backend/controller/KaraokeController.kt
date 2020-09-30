@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 class KaraokeController(@Autowired private val karaokeRepository: KaraokeRepository) {
 
     @PostMapping()
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     fun createKaraoke(@RequestBody karaoke: Karaoke): Karaoke = karaokeRepository.save(karaoke)
 
 
