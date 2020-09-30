@@ -14,7 +14,8 @@ data class User(
     @JsonIgnore
     var password: String,
 
-
+    //Todo: Map enum to database representation
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "user_roles",
