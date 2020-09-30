@@ -57,7 +57,7 @@ class KaraokeUserDetails(val id: Int, private val name: String, @field:JsonIgnor
                     user.username,
                     user.password,
                     authorities
-                    )
+            )
         }
     }
 }

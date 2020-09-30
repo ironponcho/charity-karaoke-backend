@@ -8,7 +8,6 @@ import de.charitykaraoke.backend.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
@@ -45,7 +44,7 @@ class DatabaseSeeder {
 
     private fun seedAdminUserTable() {
         if (!userRepository.existsByUsername("admin")) {
-            userRepository.save(User(username = "admin", password = encoder.encode("password"), karaoke = null,  roles = listOf(Role(1, "ROLE_ADMIN"), Role(2, "ROLE_USER"))))
+            userRepository.save(User(username = "admin", password = encoder.encode("password"), roles = listOf(Role(1, "ROLE_ADMIN"), Role(2, "ROLE_USER"))))
         }
     }
 

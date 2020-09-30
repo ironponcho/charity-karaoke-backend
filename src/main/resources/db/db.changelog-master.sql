@@ -19,9 +19,9 @@ alter table karaokes
 --users
 create table users
 (
-    id         serial  not null,
-    username       varchar not null,
-    password   varchar not null
+    id       serial  not null,
+    username varchar not null,
+    password varchar not null
 );
 
 create unique index users_id_uindex
@@ -34,12 +34,12 @@ alter table users
 --songs
 create table songs
 (
-    id     serial not null,
-    karaoke_id int not null ,
-    user_id int    not null,
-    title  varchar,
-    artist varchar,
-    link   varchar
+    id         serial not null,
+    karaoke_id int    not null,
+    user_id    int    not null,
+    title      varchar,
+    artist     varchar,
+    link       varchar
 );
 
 create unique index songs_id_uindex
@@ -60,11 +60,11 @@ alter table songs
 --votes
 create table votes
 (
-    id          serial not null,
-    user_id int    not null,
+    id           serial not null,
+    user_id      int    not null,
     recipient_id int    not null,
-    karaoke_id int not null ,
-    percentage  int    not null
+    karaoke_id   int    not null,
+    percentage   int    not null
 );
 
 create unique index votes_id_uindex
@@ -90,8 +90,8 @@ alter table votes
 -- user karaoke mapping
 create table user_karaokes
 (
-    user_id int not null,
-    karaoke_id   int not null
+    user_id    int not null,
+    karaoke_id int not null
 );
 
 alter table user_karaokes
@@ -99,7 +99,7 @@ alter table user_karaokes
         primary key (user_id, karaoke_id);
 
 create unique index user_karaokes_id_uindex
-    on user_karaokes (user_id,karaoke_id);
+    on user_karaokes (user_id, karaoke_id);
 
 alter table user_karaokes
     add constraint user_fk
@@ -112,8 +112,8 @@ alter table user_karaokes
 -- roles
 create table roles
 (
-    id     serial not null,
-    name   varchar not null unique
+    id   serial  not null,
+    name varchar not null unique
 );
 
 alter table roles
@@ -126,7 +126,7 @@ create unique index roles_id_uindex
 create table user_roles
 (
     user_id int not null,
-    role_id     int not null
+    role_id int not null
 );
 
 alter table user_roles
@@ -134,7 +134,7 @@ alter table user_roles
         primary key (user_id, role_id);
 
 create unique index user_roles_id_uindex
-    on user_roles (user_id,role_id);
+    on user_roles (user_id, role_id);
 
 
 alter table user_roles

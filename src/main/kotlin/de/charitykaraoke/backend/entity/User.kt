@@ -24,6 +24,6 @@ data class User(
         @JoinTable(name = "user_karaokes",
                 joinColumns = [JoinColumn(name = "user_id")],
                 inverseJoinColumns = [JoinColumn(name = "karaoke_id")])
-        var karaoke: List<Karaoke>?
+        var karaoke: List<Karaoke> = emptyList()
 
 )

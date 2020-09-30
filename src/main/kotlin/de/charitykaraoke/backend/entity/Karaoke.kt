@@ -1,8 +1,6 @@
 package de.charitykaraoke.backend.entity
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.OffsetDateTime
-import java.time.ZonedDateTime
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
 
@@ -16,6 +14,6 @@ data class Karaoke(
         var expired: Boolean = false,
 
         @ManyToMany(fetch = FetchType.LAZY, mappedBy = "karaoke")
-        var users: List<User>?
+        var attendees: List<User>?
 
 )

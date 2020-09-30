@@ -4,9 +4,11 @@ package de.charitykaraoke.backend.controller
 import de.charitykaraoke.backend.auth.JwtUtils
 import de.charitykaraoke.backend.auth.KaraokeUserDetails
 import de.charitykaraoke.backend.auth.payload.request.LoginRequest
+import de.charitykaraoke.backend.auth.payload.request.SignupRequest
 import de.charitykaraoke.backend.auth.payload.response.JwtResponse
 import de.charitykaraoke.backend.auth.payload.response.MessageResponse
 import de.charitykaraoke.backend.entity.User
+import de.charitykaraoke.backend.repository.KaraokeRepository
 import de.charitykaraoke.backend.repository.RoleRepository
 import de.charitykaraoke.backend.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,6 +38,9 @@ class AuthController {
     lateinit var roleRepository: RoleRepository
 
     @Autowired
+    lateinit var karaokeRepository: KaraokeRepository
+
+    @Autowired
     lateinit var encoder: PasswordEncoder
 
     @Autowired
@@ -58,14 +63,23 @@ class AuthController {
     }
 
     @PostMapping("/signup")
-    fun registerUser(@RequestBody user: @Valid User): ResponseEntity<*> {
-        if (userRepository.existsByUsername(user.username)) {
+    fun registerUser(@RequestBody signupRequest: @Valid SignupRequest): ResponseEntity<*> {
+        if (userRepository.existsByUsername(signupRequest.username)) {
             return ResponseEntity
                     .badRequest()
                     .body(MessageResponse("Error: Username is already taken!"))
         }
-        user.password = encoder.encode(user.password)
-        userRepository.save(user)
-        return ResponseEntity.ok(MessageResponse("User registered successfully!"))
+
+        val optKaraoke = karaokeRepository.findById(signupRequest.karaoke_id)
+
+        return if (optKaraoke.isPresent) {
+            userRepository.save(User(username = "admin", password = encoder.encode(signupRequest.password), karaoke = listOf(optKaraoke.get())))
+            ResponseEntity.ok(MessageResponse("User registered successfully!"))
+        } else {
+            ResponseEntity
+                    .badRequest()
+                    .body(MessageResponse("Error: Karaoke not found!"))
+        }
+
     }
 }
