@@ -5,7 +5,7 @@ create table karaokes
 (
     id      serial  not null,
     name    varchar not null,
-    date    timestamp,
+    date    timestamptz,
     expired boolean default false
 );
 

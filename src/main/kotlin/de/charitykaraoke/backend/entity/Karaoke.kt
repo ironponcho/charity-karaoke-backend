@@ -1,6 +1,8 @@
 package de.charitykaraoke.backend.entity
 
-import java.time.LocalDateTime
+import com.fasterxml.jackson.annotation.JsonFormat
+import java.time.OffsetDateTime
+import java.time.ZonedDateTime
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
 
@@ -9,7 +11,8 @@ data class Karaoke(
         @Id @GeneratedValue(
                 strategy = GenerationType.IDENTITY) val id: Int = 0,
         @get: NotBlank var name: String,
-        var date: LocalDateTime,
+
+        var date: OffsetDateTime,
         var expired: Boolean = false,
 
         @ManyToMany(fetch = FetchType.LAZY, mappedBy = "karaoke")
