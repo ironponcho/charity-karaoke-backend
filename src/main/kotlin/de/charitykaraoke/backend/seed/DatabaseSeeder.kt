@@ -31,15 +31,12 @@ class DatabaseSeeder {
     }
 
     private fun seedRoleTable() {
-
-        if (!roleRepository.existsByName(ERole.ROLE_USER.toString())) {
-            roleRepository.save(Role(name = ERole.ROLE_USER.toString()))
-        }
-
         if (!roleRepository.existsByName(ERole.ROLE_ADMIN.toString())) {
-            roleRepository.save(Role(name = ERole.ROLE_ADMIN.toString()))
+            roleRepository.save(Role(id = 1, name = ERole.ROLE_ADMIN.toString()))
         }
-
+        if (!roleRepository.existsByName(ERole.ROLE_USER.toString())) {
+            roleRepository.save(Role(id = 2, name = ERole.ROLE_USER.toString()))
+        }
     }
 
     private fun seedAdminUserTable() {

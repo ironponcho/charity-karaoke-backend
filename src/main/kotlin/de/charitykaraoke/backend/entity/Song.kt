@@ -11,12 +11,12 @@ data class Song(
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "karaoke_id")
         @JsonIgnore
-        var karaoke: Karaoke,
+        var karaoke: Karaoke?,
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_id")
         @JsonIgnore
-        var user: User,
+        var user: User?,
 
         var title: String,
         var artist: String,

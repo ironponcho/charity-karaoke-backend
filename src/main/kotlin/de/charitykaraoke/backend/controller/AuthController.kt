@@ -73,7 +73,7 @@ class AuthController {
         val optKaraoke = karaokeRepository.findById(signupRequest.karaoke_id)
 
         return if (optKaraoke.isPresent) {
-            userRepository.save(User(username = "admin", password = encoder.encode(signupRequest.password), karaoke = listOf(optKaraoke.get())))
+            userRepository.save(User(username = signupRequest.username, password = encoder.encode(signupRequest.password), karaoke = listOf(optKaraoke.get())))
             ResponseEntity.ok(MessageResponse("User registered successfully!"))
         } else {
             ResponseEntity
