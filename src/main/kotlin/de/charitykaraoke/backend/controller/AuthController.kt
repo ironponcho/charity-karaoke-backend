@@ -34,8 +34,8 @@ class AuthController {
     @Autowired
     lateinit var userRepository: UserRepository
 
-    @Autowired
-    lateinit var roleRepository: RoleRepository
+//    @Autowired
+//    lateinit var roleRepository: RoleRepository
 
     @Autowired
     lateinit var karaokeRepository: KaraokeRepository
@@ -48,22 +48,7 @@ class AuthController {
 
     @PostMapping("/signin")
     fun authenticateUser(@RequestBody loginRequest: @Valid LoginRequest): ResponseEntity<*> {
-        val authentication: Authentication = authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
-        )
-        SecurityContextHolder.getContext().authentication = authentication
-        val jwt = jwtUtils.generateJwtToken(authentication)
-        val userDetails: KaraokeUserDetails = authentication.principal as KaraokeUserDetails
-        val roles: List<String> = userDetails.authorities.stream()
-            .map { item -> item.authority }
-            .collect(Collectors.toList())
-        return ResponseEntity.ok(
-            JwtResponse(
-                jwt,
-                userDetails.id,
-                userDetails.username,
-                roles
-            )
+        return ResponseEntity.ok(createJwtResponse(loginRequest.username, loginRequest.password)
         )
     }
 
@@ -85,12 +70,29 @@ class AuthController {
                     karaoke = listOf(optKaraoke.get())
                 )
             )
-            ResponseEntity.ok(MessageResponse("User registered successfully!"))
+            ResponseEntity.ok(createJwtResponse(signupRequest.username, signupRequest.password))
         } else {
             ResponseEntity
                 .badRequest()
                 .body(MessageResponse("Error: Karaoke not found!"))
         }
+    }
 
+    private fun createJwtResponse(username: String, password: String): JwtResponse {
+        val authentication: Authentication = authenticationManager.authenticate(
+            UsernamePasswordAuthenticationToken(username, password)
+        )
+        SecurityContextHolder.getContext().authentication = authentication
+        val jwt = jwtUtils.generateJwtToken(authentication)
+        val userDetails: KaraokeUserDetails = authentication.principal as KaraokeUserDetails
+        val roles: List<String> = userDetails.authorities.stream()
+            .map { item -> item.authority }
+            .collect(Collectors.toList())
+        return JwtResponse(
+            jwt,
+            userDetails.id,
+            userDetails.username,
+            roles
+        )
     }
 }
