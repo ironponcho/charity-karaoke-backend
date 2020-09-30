@@ -1,6 +1,6 @@
 package de.charitykaraoke.backend.entity
 
 enum class ERole {
-    USER,
-    ADMIN
+    ROLE_USER,
+    ROLE_ADMIN
 }

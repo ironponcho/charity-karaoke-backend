@@ -11,7 +11,7 @@ import java.security.Principal
 class HealthController {
 
     @GetMapping("/health")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     fun live(principal: Principal): ResponseEntity<MessageResponse> {
         return ResponseEntity.ok(MessageResponse("User: " + principal.name))
     }
