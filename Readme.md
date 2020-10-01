@@ -4,12 +4,19 @@ This project is a backend for charity karaoke to organize and evaluate the perfo
 
 Spring Boot project written in Kotlin
 
+### Linting 
+
+Usage of ktlint: 
+
+Check for linting errors: `mvn antrun:run@ktlint`
+
+To automatically fix linting errors run: `mvn antrun:run@ktlint-format`
 
 ### Database
 
 docker-compose.yml file will bring up the required postgresql server for developing purpose
 
-Liquibase run migrations on application startup
+Liquibase runs migrations on application startup
  
 ### Docker
 
