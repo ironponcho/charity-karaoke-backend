@@ -21,14 +21,26 @@ class SongController(
     @Autowired private val userRepository: UserRepository
 ) {
 
+    data class SongRequest(
+        var title: String,
+        var artist: String,
+        var link: String,
+        var karaokeId: Int
+    )
+
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_USER')")
-    fun createAttendee(principal: Principal, @RequestBody song: Song): ResponseEntity<Song> {
+    fun createSong(principal: Principal, @RequestBody songRequest: SongRequest): ResponseEntity<String> {
 
-        val user = userRepository.findByUsername(principal.name).get()
-        song.user = user
-        song.karaoke = user.karaoke[0]
-        songRepository.save(song)
+        val user = userRepository.findByUsername(principal.name)
+
+        val karaoke = karaokeRepository.findById(songRequest.karaokeId)
+
+        if (karaoke.isEmpty) {
+            return ResponseEntity.badRequest().body("Karaoke not found!")
+        }
+
+        songRepository.save(Song(title = songRequest.title, artist = songRequest.artist, link = songRequest.link, karaoke = karaoke.get(), user = user.get()))
         return ResponseEntity.ok().build()
     }
 }
