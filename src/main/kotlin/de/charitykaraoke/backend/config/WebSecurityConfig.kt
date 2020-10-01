@@ -19,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -41,7 +40,6 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .passwordEncoder(passwordEncoder())
     }
 
-
     @Bean
     @Throws(Exception::class)
     override fun authenticationManagerBean(): AuthenticationManager {
@@ -55,7 +53,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
-        //Todo: proper cors and csrf setup
+        // Todo: proper cors and csrf setup
         http.cors().and().csrf().disable()
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

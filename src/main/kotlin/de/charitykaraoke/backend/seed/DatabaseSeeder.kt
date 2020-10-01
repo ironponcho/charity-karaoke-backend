@@ -23,7 +23,6 @@ class DatabaseSeeder {
     @Autowired
     lateinit var encoder: PasswordEncoder
 
-
     @EventListener(ApplicationReadyEvent::class)
     fun seed() {
         seedRoleTable()
@@ -50,5 +49,4 @@ class DatabaseSeeder {
             )
         }
     }
-
 }

@@ -12,6 +12,4 @@ class WebMvcConfig : WebMvcConfigurer {
             .allowedOrigins("*")
             .allowedMethods("GET", "PUT", "POST", "DELETE")
     }
-
-
 }

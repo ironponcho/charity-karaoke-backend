@@ -7,9 +7,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.util.stream.Collectors
 
-
 class KaraokeUserDetails(
-    val id: Int, private val name: String, @field:JsonIgnore private val password: String,
+    val id: Int,
+    private val name: String,
+    @field:JsonIgnore private val password: String,
     private val authorities: Collection<GrantedAuthority>
 ) : UserDetails {
 

@@ -1,6 +1,5 @@
 package de.charitykaraoke.backend.controller
 
-
 import de.charitykaraoke.backend.auth.JwtUtils
 import de.charitykaraoke.backend.auth.KaraokeUserDetails
 import de.charitykaraoke.backend.auth.payload.request.LoginRequest
@@ -9,7 +8,6 @@ import de.charitykaraoke.backend.auth.payload.response.JwtResponse
 import de.charitykaraoke.backend.auth.payload.response.MessageResponse
 import de.charitykaraoke.backend.entity.User
 import de.charitykaraoke.backend.repository.KaraokeRepository
-import de.charitykaraoke.backend.repository.RoleRepository
 import de.charitykaraoke.backend.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -48,7 +46,8 @@ class AuthController {
 
     @PostMapping("/signin")
     fun authenticateUser(@RequestBody loginRequest: @Valid LoginRequest): ResponseEntity<*> {
-        return ResponseEntity.ok(createJwtResponse(loginRequest.username, loginRequest.password)
+        return ResponseEntity.ok(
+            createJwtResponse(loginRequest.username, loginRequest.password)
         )
     }
 
