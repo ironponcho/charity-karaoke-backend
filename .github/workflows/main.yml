@@ -38,4 +38,4 @@ jobs:
         uses: docker/push-action@v1
         with:
           registry: registry.fanya.dev
-          tags: ${{ outputs.build.tags }
+          tags: ${{ outputs.build.tags }}
