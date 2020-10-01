@@ -5,6 +5,7 @@ import de.charitykaraoke.backend.repository.KaraokeRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -15,18 +16,28 @@ class KaraokeController(@Autowired private val karaokeRepository: KaraokeReposit
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun createKaraoke(@RequestBody karaoke: Karaoke): Karaoke = karaokeRepository.save(karaoke)
 
-
-    //Todo: unset attendees if not authenticated
     @GetMapping("/{karaokeId}")
-    fun getKaraokeById(@PathVariable karaokeId: Int): ResponseEntity<Karaoke> =
+    fun getKaraokeById(authentication: Authentication?, @PathVariable karaokeId: Int): ResponseEntity<Karaoke> =
 
         karaokeRepository.findById(karaokeId).map {
-//                    if (principal == null) {
-//                        it.attendees = emptyList()
-//                    }
+            if (authentication == null || authentication.authorities.stream()
+                    .noneMatch { a -> a.authority == "ROLE_ADMIN" }
+            ) {
+                it.attendees = emptyList()
+            }
             ResponseEntity.ok(it)
         }.orElse(ResponseEntity.notFound().build())
 
     @GetMapping()
-    fun getAllKaraokes(): List<Karaoke> = karaokeRepository.findAll()
+    fun getAllKaraokes(authentication: Authentication?): List<Karaoke> {
+
+        val karaokes: List<Karaoke> = karaokeRepository.findAll()
+        if (authentication == null || authentication.authorities.stream()
+                .noneMatch { a -> a.authority == "ROLE_ADMIN" }
+        ) {
+            return karaokes.onEach { it.attendees = emptyList() }
+        }
+        return karaokes
+    }
+
 }
