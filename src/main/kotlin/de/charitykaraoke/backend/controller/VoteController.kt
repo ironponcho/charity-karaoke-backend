@@ -1,6 +1,5 @@
 package de.charitykaraoke.backend.controller
 
-import de.charitykaraoke.backend.entity.User
 import de.charitykaraoke.backend.entity.Vote
 import de.charitykaraoke.backend.repository.KaraokeRepository
 import de.charitykaraoke.backend.repository.UserRepository
@@ -32,7 +31,7 @@ class VoteController(
     @PreAuthorize("hasRole('ROLE_USER')")
     fun createVote(principal: Principal, @RequestBody voteRequest: VoteRequest): ResponseEntity<String> {
 
-        val user = userRepository.findByUsername(principal.name)
+        val user = userRepository.findByUsername(principal.name).get()
 
         val karaoke = karaokeRepository.findById(voteRequest.karaokeId)
 
@@ -46,7 +45,15 @@ class VoteController(
             return ResponseEntity.badRequest().body("Recipient not found!")
         }
 
-        voteRepository.save(Vote(percentage = voteRequest.percentage, recipient = recipient.get(), user = user.get(), karaoke = karaoke.get()))
+        val voted = voteRepository.findByUserIdAndKaraokeIdAndRecipientId(user.id, voteRequest.karaokeId, voteRequest.recipientId)
+
+        if (voted.isPresent) {
+            val vote = voted.get()
+            vote.percentage = voteRequest.percentage
+            voteRepository.save(vote)
+        } else {
+            voteRepository.save(Vote(percentage = voteRequest.percentage, recipient = recipient.get(), user = user, karaoke = karaoke.get()))
+        }
         return ResponseEntity.ok().build()
     }
 }
