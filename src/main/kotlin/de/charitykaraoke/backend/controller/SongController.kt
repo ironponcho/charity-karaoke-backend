@@ -7,6 +7,7 @@ import de.charitykaraoke.backend.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
-
 @RestController
 @RequestMapping("/song")
 class SongController(
@@ -48,8 +48,29 @@ class SongController(
 
     @GetMapping("/{karaokeId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    fun getSongsForKaraoke(principal: Principal, @PathVariable karaokeId: Int): ResponseEntity<List<Song>> =
-        ResponseEntity.ok().body(songRepository.findByKaraokeIdOrderBySequenceAsc(karaokeId))
+    fun getSongsForKaraoke(authentication: Authentication, @PathVariable karaokeId: Int): ResponseEntity<List<Song>>  {
+
+        val songs = songRepository.findByKaraokeIdOrderBySequenceAsc(karaokeId)
+
+        if (authentication.authorities.stream()
+                .noneMatch { a -> a.authority == "ROLE_ADMIN" }
+        ) {
+            songs.onEach { song ->
+                run {
+                    val vote = song.votes.find { it.user.username == authentication.name }
+
+                    if (vote != null) {
+                        song.votes = listOf(vote)
+                    } else {
+                        song.votes = emptyList()
+
+                    }
+                }
+            }
+        }
+
+        return ResponseEntity.ok().body(songs)
+    }
 
     @GetMapping("/shuffle/{karaokeId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -87,3 +108,4 @@ class SongController(
 //        return ResponseEntity.ok().body(songs)
 //    }
 }
+

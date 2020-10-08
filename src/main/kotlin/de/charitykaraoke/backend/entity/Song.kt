@@ -8,6 +8,7 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.OneToMany
 
 @Entity(name = "songs")
 data class Song(
@@ -23,6 +24,9 @@ data class Song(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     var user: User,
+
+    @OneToMany(mappedBy = "song" ,fetch = FetchType.LAZY)
+    var votes: List<Vote> = emptyList(),
 
     var title: String,
     var artist: String,

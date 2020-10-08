@@ -39,7 +39,8 @@ create table songs
     user_id    int    not null,
     title      varchar,
     artist     varchar,
-    link       varchar
+    link       varchar,
+    sequence   int
 );
 
 create unique index songs_id_uindex
@@ -62,7 +63,7 @@ create table votes
 (
     id           serial not null,
     user_id      int    not null,
-    recipient_id int    not null,
+    song_id      int    not null,
     karaoke_id   int    not null,
     percentage   int    not null
 );
@@ -80,7 +81,7 @@ alter table votes
 
 alter table votes
     add constraint recipient_fk
-        foreign key (recipient_id) references users;
+        foreign key (song_id) references songs;
 
 alter table votes
     add constraint karaoke_fk
@@ -145,8 +146,3 @@ alter table user_roles
 alter table user_roles
     add constraint role_fk
         foreign key (role_id) references roles;
-
---changeset matthias:song-sequence
-
-alter table songs
-    ADD sequence int

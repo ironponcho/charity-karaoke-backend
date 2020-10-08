@@ -17,14 +17,14 @@ data class Vote(
     var percentage: Int,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipient_id", nullable = false)
-    @JsonIgnore
-    var recipient: User,
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
     var user: User,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "song_id", nullable = false)
+    @JsonIgnore
+    var song: Song,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "karaoke_id", nullable = false)

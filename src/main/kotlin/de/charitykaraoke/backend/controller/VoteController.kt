@@ -2,6 +2,7 @@ package de.charitykaraoke.backend.controller
 
 import de.charitykaraoke.backend.entity.Vote
 import de.charitykaraoke.backend.repository.KaraokeRepository
+import de.charitykaraoke.backend.repository.SongRepository
 import de.charitykaraoke.backend.repository.UserRepository
 import de.charitykaraoke.backend.repository.VoteRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,12 +19,13 @@ import java.security.Principal
 class VoteController(
     @Autowired private val voteRepository: VoteRepository,
     @Autowired private val karaokeRepository: KaraokeRepository,
-    @Autowired private val userRepository: UserRepository
+    @Autowired private val userRepository: UserRepository,
+    @Autowired private val songRepository: SongRepository
 ) {
 
     data class VoteRequest(
         var percentage: Int,
-        var recipientId: Int,
+        var songId: Int,
         var karaokeId: Int
     )
 
@@ -39,20 +41,20 @@ class VoteController(
             return ResponseEntity.badRequest().body("Karaoke not found!")
         }
 
-        val recipient = userRepository.findById(voteRequest.recipientId)
+        val song = songRepository.findById(voteRequest.songId)
 
-        if (recipient.isEmpty) {
+        if (song.isEmpty) {
             return ResponseEntity.badRequest().body("Recipient not found!")
         }
 
-        val voted = voteRepository.findByUserIdAndKaraokeIdAndRecipientId(user.id, voteRequest.karaokeId, voteRequest.recipientId)
+        val voted = voteRepository.findByUserIdAndKaraokeIdAndSongId(user.id, voteRequest.karaokeId, voteRequest.songId)
 
         if (voted.isPresent) {
             val vote = voted.get()
             vote.percentage = voteRequest.percentage
             voteRepository.save(vote)
         } else {
-            voteRepository.save(Vote(percentage = voteRequest.percentage, recipient = recipient.get(), user = user, karaoke = karaoke.get()))
+            voteRepository.save(Vote(percentage = voteRequest.percentage, song = song.get(), user = user, karaoke = karaoke.get()))
         }
         return ResponseEntity.ok().build()
     }

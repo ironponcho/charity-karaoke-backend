@@ -8,5 +8,5 @@ import java.util.Optional
 @Repository
 interface VoteRepository : JpaRepository<Vote, Int> {
 
-    fun findByUserIdAndKaraokeIdAndRecipientId(userId: Int, karaokeId: Int, recipientId: Int): Optional<Vote>
+    fun findByUserIdAndKaraokeIdAndSongId(userId: Int, karaokeId: Int, songId: Int): Optional<Vote>
 }
