@@ -145,3 +145,8 @@ alter table user_roles
 alter table user_roles
     add constraint role_fk
         foreign key (role_id) references roles;
+
+--changeset matthias:song-sequence
+
+alter table songs
+    ADD sequence int

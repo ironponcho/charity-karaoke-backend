@@ -22,6 +22,6 @@ data class Karaoke(
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "karaoke")
-    var attendees: List<User>?
+    var attendees: List<User>? = emptyList()
 
 )

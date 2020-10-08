@@ -7,6 +7,8 @@ import de.charitykaraoke.backend.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -43,4 +45,45 @@ class SongController(
         songRepository.save(Song(title = songRequest.title, artist = songRequest.artist, link = songRequest.link, karaoke = karaoke.get(), user = user.get()))
         return ResponseEntity.ok().build()
     }
+
+    @GetMapping("/{karaokeId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    fun getSongsForKaraoke(principal: Principal, @PathVariable karaokeId: Int): ResponseEntity<List<Song>> =
+        ResponseEntity.ok().body(songRepository.findByKaraokeIdOrderBySequenceAsc(karaokeId))
+
+    @GetMapping("/shuffle/{karaokeId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    fun shuffleSequences(principal: Principal, @PathVariable karaokeId: Int): ResponseEntity<List<Song>> {
+        val songs = songRepository.findByKaraokeIdOrderBySequenceAsc(karaokeId)
+
+        songs.shuffled()
+
+        for (i in songs.indices) {
+            songs[i].sequence = i
+        }
+
+        songRepository.saveAll(songs)
+
+        return ResponseEntity.ok().body(songs)
+    }
+
+//    data class Sequence (
+//        var songId: Int,
+//        var sequence: Int
+//        )
+//
+//    data class SequenceRequest(
+//        var karaokeId: Int,
+//        var songs: List<Sequence>
+//    )
+//
+//    @PostMapping("/sequence")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    fun setSequences(principal: Principal, @RequestBody request: SequenceRequest): ResponseEntity<List<Song>> {
+//        val songs = songRepository.findByKaraokeId(request.karaokeId)
+//
+//        songRepository.saveAll(songs)
+//
+//        return ResponseEntity.ok().body(songs)
+//    }
 }
