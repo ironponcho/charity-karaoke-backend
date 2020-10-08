@@ -48,12 +48,12 @@ class SongController(
 
     @GetMapping("/{karaokeId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    fun getSongsForKaraoke(authentication: Authentication, @PathVariable karaokeId: Int): ResponseEntity<List<Song>>  {
+    fun getSongsForKaraoke(authentication: Authentication, @PathVariable karaokeId: Int): ResponseEntity<List<Song>> {
 
         val songs = songRepository.findByKaraokeIdOrderBySequenceAsc(karaokeId)
 
         if (authentication.authorities.stream()
-                .noneMatch { a -> a.authority == "ROLE_ADMIN" }
+            .noneMatch { a -> a.authority == "ROLE_ADMIN" }
         ) {
             songs.onEach { song ->
                 run {
@@ -63,7 +63,6 @@ class SongController(
                         song.votes = listOf(vote)
                     } else {
                         song.votes = emptyList()
-
                     }
                 }
             }
@@ -108,4 +107,3 @@ class SongController(
 //        return ResponseEntity.ok().body(songs)
 //    }
 }
-

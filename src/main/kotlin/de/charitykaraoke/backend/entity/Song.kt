@@ -25,7 +25,7 @@ data class Song(
     @JoinColumn(name = "user_id")
     var user: User,
 
-    @OneToMany(mappedBy = "song" ,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "song", fetch = FetchType.LAZY)
     var votes: List<Vote> = emptyList(),
 
     var title: String,

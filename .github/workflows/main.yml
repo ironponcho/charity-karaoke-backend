@@ -23,7 +23,7 @@ jobs:
         with:
           java-version: 11
       - name: ktlint check
-        run: mvn antrun:run@ktlint
+        run: mvn antrun:run@ktlint-format
 
       - name: Build Docker image with Maven
         run: mvn spring-boot:build-image -Dspring-boot.build-image.imageName=registry.fanya.dev/charity-karaoke-backend
