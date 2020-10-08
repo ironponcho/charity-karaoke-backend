@@ -2,6 +2,7 @@ package de.charitykaraoke.backend.controller
 
 import de.charitykaraoke.backend.entity.Karaoke
 import de.charitykaraoke.backend.repository.KaraokeRepository
+import de.charitykaraoke.backend.repository.SongRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -15,11 +16,81 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/karaoke")
-class KaraokeController(@Autowired private val karaokeRepository: KaraokeRepository) {
+class KaraokeController() {
+
+    @Autowired
+    lateinit var karaokeRepository: KaraokeRepository
+
+    @Autowired
+    lateinit var songRepository: SongRepository
 
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun createKaraoke(@RequestBody karaoke: Karaoke): Karaoke = karaokeRepository.save(karaoke)
+
+    data class KaraokeControlRequest(
+        val karaokeId: Int,
+        val songId: Int
+    )
+
+    @PostMapping("/start")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    fun startKaraoke(@RequestBody pcRequest: KaraokeControlRequest): ResponseEntity<*> =
+        karaokeRepository.findById(pcRequest.karaokeId).map { karaoke ->
+
+            if (karaoke.currentSong != null) {
+                return@map ResponseEntity.badRequest().body("Karaoke already started!")
+            }
+
+            val firstSong = songRepository.findByKaraokeIdOrderBySequenceAsc(pcRequest.karaokeId).first()
+
+            if (firstSong.id != pcRequest.songId) {
+                return@map ResponseEntity.badRequest().body("Song id is not matching with given sequence!")
+            }
+
+            karaoke.currentSong = firstSong
+            karaokeRepository.save(karaoke)
+
+            ResponseEntity.ok().body(firstSong)
+        }.orElse(ResponseEntity.badRequest().body("Karaoke not found!"))
+
+    @PostMapping("/next")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    fun nextPerformer(@RequestBody pcRequest: KaraokeControlRequest): ResponseEntity<*> =
+        karaokeRepository.findById(pcRequest.karaokeId).map { karaoke ->
+
+            val songs = songRepository.findByKaraokeIdOrderBySequenceAsc(pcRequest.karaokeId)
+
+            val nextSong = songs[songs.indexOf(karaoke.currentSong) + 1]
+
+            if (nextSong.id != pcRequest.songId) {
+                return@map ResponseEntity.badRequest().body("Song id is not matching with given sequence!")
+            }
+
+            karaoke.currentSong = nextSong
+            karaokeRepository.save(karaoke)
+
+            ResponseEntity.ok().body(nextSong)
+        }.orElse(ResponseEntity.badRequest().body("Karaoke not found!"))
+
+    @PostMapping("/previous")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    fun previousPerformer(@RequestBody pcRequest: KaraokeControlRequest): ResponseEntity<*> =
+        karaokeRepository.findById(pcRequest.karaokeId).map { karaoke ->
+
+            val songs = songRepository.findByKaraokeIdOrderBySequenceAsc(pcRequest.karaokeId)
+
+            val previousSong = songs[songs.indexOf(karaoke.currentSong) - 1]
+
+            if (previousSong.id != pcRequest.songId) {
+                return@map ResponseEntity.badRequest().body("Song id is not matching with given sequence!")
+            }
+
+            karaoke.currentSong = previousSong
+            karaokeRepository.save(karaoke)
+
+            ResponseEntity.ok().body(previousSong)
+        }.orElse(ResponseEntity.badRequest().body("Karaoke not found!"))
 
     @GetMapping("/{karaokeId}")
     fun getKaraokeById(authentication: Authentication?, @PathVariable karaokeId: Int): ResponseEntity<Karaoke> =
@@ -29,6 +100,7 @@ class KaraokeController(@Autowired private val karaokeRepository: KaraokeReposit
                 .noneMatch { a -> a.authority == "ROLE_ADMIN" }
             ) {
                 it.attendees = emptyList()
+                it.currentSong = null
             }
             ResponseEntity.ok(it)
         }.orElse(ResponseEntity.notFound().build())
@@ -40,7 +112,7 @@ class KaraokeController(@Autowired private val karaokeRepository: KaraokeReposit
         if (authentication == null || authentication.authorities.stream()
             .noneMatch { a -> a.authority == "ROLE_ADMIN" }
         ) {
-            return karaokes.onEach { it.attendees = emptyList() }
+            return karaokes.onEach { it.attendees = emptyList(); it.currentSong = null }
         }
         return karaokes
     }

@@ -3,10 +3,11 @@
 
 create table karaokes
 (
-    id      serial  not null,
-    name    varchar not null,
-    date    timestamptz,
-    expired boolean default false
+    id                  serial  not null,
+    name                varchar not null,
+    date                timestamptz,
+    current_song_id     int,
+    expired             boolean default false
 );
 
 create unique index karaokes_id_uindex
@@ -57,6 +58,10 @@ alter table songs
 alter table songs
     add constraint karaoke_fk
         foreign key (karaoke_id) references karaokes;
+
+alter table karaokes
+    add constraint current_song_fk
+        foreign key (current_song_id) references songs;
 
 --votes
 create table votes
@@ -146,3 +151,4 @@ alter table user_roles
 alter table user_roles
     add constraint role_fk
         foreign key (role_id) references roles;
+
