@@ -94,19 +94,6 @@ class KaraokeController() {
             ResponseEntity.ok().body(previousSong)
         }.orElse(ResponseEntity.badRequest().body("Karaoke not found!"))
 
-    @GetMapping("/{karaokeId}")
-    fun getKaraokeById(authentication: Authentication?, @PathVariable karaokeId: Int): ResponseEntity<Karaoke> =
-
-        karaokeRepository.findById(karaokeId).map {
-            if (authentication == null || authentication.authorities.stream()
-                .noneMatch { a -> a.authority == "ROLE_ADMIN" }
-            ) {
-                it.attendees = emptyList()
-                it.currentSong = null
-            }
-            ResponseEntity.ok(it)
-        }.orElse(ResponseEntity.notFound().build())
-
     @GetMapping("/shuffle/{karaokeId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun shuffleSequences(principal: Principal, @PathVariable karaokeId: Int): ResponseEntity<List<Song>> {
@@ -122,6 +109,33 @@ class KaraokeController() {
 
         return ResponseEntity.ok().body(songs)
     }
+
+
+    @GetMapping("/currentSong/{karaokeId}")
+    fun getCurrentSong(@PathVariable karaokeId: Int) : ResponseEntity<*> {
+
+        val karaoke = karaokeRepository.findById(karaokeId)
+
+        return if (karaoke.isEmpty) {
+            ResponseEntity.notFound().build<Int>()
+        } else {
+            ResponseEntity.ok().body(karaoke.get().currentSong?.id)
+        }
+    }
+
+    @GetMapping("/{karaokeId}")
+    fun getKaraokeById(authentication: Authentication?, @PathVariable karaokeId: Int): ResponseEntity<Karaoke> =
+
+        karaokeRepository.findById(karaokeId).map {
+            if (authentication == null || authentication.authorities.stream()
+                    .noneMatch { a -> a.authority == "ROLE_ADMIN" }
+            ) {
+                it.attendees = emptyList()
+                it.currentSong = null
+            }
+            ResponseEntity.ok(it)
+        }.orElse(ResponseEntity.notFound().build())
+
 
     @GetMapping()
     fun getAllKaraokes(authentication: Authentication?): List<Karaoke> {
