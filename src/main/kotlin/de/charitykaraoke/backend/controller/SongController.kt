@@ -24,6 +24,7 @@ class SongController(
 ) {
 
     data class SongRequest(
+        var songId: Int? = null,
         var title: String,
         var artist: String,
         var link: String,
@@ -32,7 +33,26 @@ class SongController(
 
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_USER')")
-    fun createSong(principal: Principal, @RequestBody songRequest: SongRequest): ResponseEntity<String> {
+    fun createOrUpdateSong(principal: Principal, @RequestBody songRequest: SongRequest): ResponseEntity<String> {
+
+
+        if (songRequest.songId != null) {
+            val maybeSong = songRepository.findById(songRequest.songId!!)
+
+            if (maybeSong.isEmpty) {
+                return ResponseEntity.badRequest().body("Song not found!")
+            }
+
+            val song = maybeSong.get()
+            song.title = songRequest.title
+            song.artist = songRequest.artist
+            song.link = songRequest.link
+
+            songRepository.save(song)
+            return ResponseEntity.ok().build()
+
+        }
+
 
         val user = userRepository.findByUsername(principal.name)
 
