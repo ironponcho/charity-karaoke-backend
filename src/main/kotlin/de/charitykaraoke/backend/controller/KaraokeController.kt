@@ -44,7 +44,13 @@ class KaraokeController() {
                 return@map ResponseEntity.badRequest().body("Karaoke already started!")
             }
 
-            val firstSong = songRepository.findByKaraokeIdOrderBySequenceAsc(pcRequest.karaokeId).first()
+            val songs = songRepository.findByKaraokeIdOrderBySequenceAsc(pcRequest.karaokeId)
+
+            if (songs.isEmpty()) {
+                return@map ResponseEntity.badRequest().body("Karaoke has no Songs!")
+            }
+
+            val firstSong = songs[0]
 
             if (firstSong.id != pcRequest.songId) {
                 return@map ResponseEntity.badRequest().body("Song id is not matching with given sequence!")
@@ -117,7 +123,7 @@ class KaraokeController() {
         val karaoke = karaokeRepository.findById(karaokeId)
 
         return if (karaoke.isEmpty) {
-            ResponseEntity.notFound().build<Int>()
+            ResponseEntity.notFound().build<Unit>()
         } else {
             ResponseEntity.ok().body(karaoke.get().currentSong?.id)
         }
