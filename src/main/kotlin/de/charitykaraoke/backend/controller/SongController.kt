@@ -24,7 +24,6 @@ class SongController(
 ) {
 
     data class SongRequest(
-        var songId: Int? = null,
         var title: String,
         var artist: String,
         var link: String,
@@ -35,26 +34,7 @@ class SongController(
     @PreAuthorize("hasRole('ROLE_USER')")
     fun createOrUpdateSong(principal: Principal, @RequestBody songRequest: SongRequest): ResponseEntity<String> {
 
-
-        if (songRequest.songId != null) {
-            val maybeSong = songRepository.findById(songRequest.songId!!)
-
-            if (maybeSong.isEmpty) {
-                return ResponseEntity.badRequest().body("Song not found!")
-            }
-
-            val song = maybeSong.get()
-            song.title = songRequest.title
-            song.artist = songRequest.artist
-            song.link = songRequest.link
-
-            songRepository.save(song)
-            return ResponseEntity.ok().build()
-
-        }
-
-
-        val user = userRepository.findByUsername(principal.name)
+        val user = userRepository.findByUsername(principal.name).get()
 
         val karaoke = karaokeRepository.findById(songRequest.karaokeId)
 
@@ -62,7 +42,19 @@ class SongController(
             return ResponseEntity.badRequest().body("Karaoke not found!")
         }
 
-        songRepository.save(Song(title = songRequest.title, artist = songRequest.artist, link = songRequest.link, karaoke = karaoke.get(), user = user.get()))
+        val presentSong = songRepository.findByUserIdAndKaraokeId(user.id, songRequest.karaokeId)
+
+        if (presentSong.isPresent) {
+            val song = presentSong.get()
+            song.title = songRequest.title
+            song.artist = songRequest.artist
+            song.link = songRequest.link
+
+            songRepository.save(song)
+        } else {
+            songRepository.save(Song(title = songRequest.title, artist = songRequest.artist, link = songRequest.link, karaoke = karaoke.get(), user = user))
+        }
+
         return ResponseEntity.ok().build()
     }
 
@@ -87,22 +79,6 @@ class SongController(
                 }
             }
         }
-
-        return ResponseEntity.ok().body(songs)
-    }
-
-    @GetMapping("/shuffle/{karaokeId}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    fun shuffleSequences(principal: Principal, @PathVariable karaokeId: Int): ResponseEntity<List<Song>> {
-        val songs = songRepository.findByKaraokeIdOrderBySequenceAsc(karaokeId)
-
-        songs.shuffled()
-
-        for (i in songs.indices) {
-            songs[i].sequence = i
-        }
-
-        songRepository.saveAll(songs)
 
         return ResponseEntity.ok().body(songs)
     }

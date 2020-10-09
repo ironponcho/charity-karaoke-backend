@@ -1,6 +1,7 @@
 package de.charitykaraoke.backend.controller
 
 import de.charitykaraoke.backend.entity.Karaoke
+import de.charitykaraoke.backend.entity.Song
 import de.charitykaraoke.backend.repository.KaraokeRepository
 import de.charitykaraoke.backend.repository.SongRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.security.Principal
 
 @RestController
 @RequestMapping("/karaoke")
@@ -104,6 +106,22 @@ class KaraokeController() {
             }
             ResponseEntity.ok(it)
         }.orElse(ResponseEntity.notFound().build())
+
+    @GetMapping("/shuffle/{karaokeId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    fun shuffleSequences(principal: Principal, @PathVariable karaokeId: Int): ResponseEntity<List<Song>> {
+        val songs = songRepository.findByKaraokeIdOrderBySequenceAsc(karaokeId)
+
+        songs.shuffled()
+
+        for (i in songs.indices) {
+            songs[i].sequence = i
+        }
+
+        songRepository.saveAll(songs)
+
+        return ResponseEntity.ok().body(songs)
+    }
 
     @GetMapping()
     fun getAllKaraokes(authentication: Authentication?): List<Karaoke> {
