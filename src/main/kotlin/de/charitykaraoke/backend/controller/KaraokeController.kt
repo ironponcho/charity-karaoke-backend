@@ -65,7 +65,13 @@ class KaraokeController() {
 
             val songs = songRepository.findByKaraokeIdOrderBySequenceAsc(pcRequest.karaokeId)
 
-            val nextSong = songs[songs.indexOf(karaoke.currentSong) + 1]
+            val nextSongIndex = songs.indexOf(karaoke.currentSong) + 1
+
+            if (songs.size <= nextSongIndex) {
+                return@map ResponseEntity.badRequest().body("No next Song available")
+            }
+
+            val nextSong = songs[nextSongIndex]
 
             if (nextSong.id != pcRequest.songId) {
                 return@map ResponseEntity.badRequest().body("Song id is not matching with given sequence!")
@@ -84,7 +90,13 @@ class KaraokeController() {
 
             val songs = songRepository.findByKaraokeIdOrderBySequenceAsc(pcRequest.karaokeId)
 
-            val previousSong = songs[songs.indexOf(karaoke.currentSong) - 1]
+            val previousSongIndex = songs.indexOf(karaoke.currentSong) - 1
+
+            if (previousSongIndex < 0) {
+                return@map ResponseEntity.badRequest().body("No previous Song available")
+            }
+
+            val previousSong = songs[previousSongIndex]
 
             if (previousSong.id != pcRequest.songId) {
                 return@map ResponseEntity.badRequest().body("Song id is not matching with given sequence!")
