@@ -41,6 +41,10 @@ class VoteController(
             return ResponseEntity.badRequest().body("Karaoke not found!")
         }
 
+        if (karaoke.get().expired) {
+            return ResponseEntity.badRequest().body("Karaoke expired!")
+        }
+
         val song = songRepository.findById(voteRequest.songId)
 
         if (song.isEmpty) {
