@@ -52,10 +52,6 @@ class KaraokeController() {
 
             val firstSong = songs[0]
 
-            if (firstSong.id != pcRequest.songId) {
-                return@map ResponseEntity.badRequest().body("Song id is not matching with given sequence!")
-            }
-
             karaoke.currentSong = firstSong
             karaokeRepository.save(karaoke)
 
