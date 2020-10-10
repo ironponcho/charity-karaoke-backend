@@ -26,6 +26,8 @@ To build this application in Docker run:
 
 ### Api
 
+#### Documentation
+
 #### Json
 
 Requests and Response should be convenient to [google's json styleguide](https://google.github.io/styleguide/jsoncstyleguide.xml).
