@@ -61,6 +61,12 @@ class AuthController {
 
         val optKaraoke = karaokeRepository.findById(signupRequest.karaokeId)
 
+        if (optKaraoke.get().expired) {
+            ResponseEntity
+                .badRequest()
+                .body(MessageResponse("This Karaoke already expired!"))
+        }
+
         return if (optKaraoke.isPresent) {
             userRepository.save(
                 User(
