@@ -113,15 +113,15 @@ class KaraokeController() {
     fun shuffleSequences(principal: Principal, @PathVariable karaokeId: Int): ResponseEntity<List<Song>> {
         val songs = songRepository.findByKaraokeIdOrderBySequenceAsc(karaokeId)
 
-        songs.shuffled()
+        val shuffledSongs = songs.shuffled()
 
-        for (i in songs.indices) {
-            songs[i].sequence = i
+        for (i in shuffledSongs.indices) {
+            shuffledSongs[i].sequence = i
         }
 
-        songRepository.saveAll(songs)
+        songRepository.saveAll(shuffledSongs)
 
-        return ResponseEntity.ok().body(songs)
+        return ResponseEntity.ok().body(shuffledSongs)
     }
 
 
