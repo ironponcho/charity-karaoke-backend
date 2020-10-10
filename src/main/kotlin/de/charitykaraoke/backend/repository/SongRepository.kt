@@ -9,5 +9,6 @@ import java.util.Optional
 interface SongRepository : JpaRepository<Song, Int> {
 
     fun findByKaraokeIdOrderBySequenceAsc(karaokeId: Int): List<Song>
+    fun countByKaraokeId(karaokeId: Int): Int
     fun findByUserIdAndKaraokeId(userId: Int, karaokeId: Int): Optional<Song>
 }

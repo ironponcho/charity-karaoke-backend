@@ -51,8 +51,9 @@ class SongController(
             song.link = songRequest.link
 
             songRepository.save(song)
-        } else {
-            songRepository.save(Song(title = songRequest.title, artist = songRequest.artist, link = songRequest.link, karaoke = karaoke.get(), user = user))
+        }  else {
+            val songCount = songRepository.countByKaraokeId(songRequest.karaokeId)
+            songRepository.save(Song(title = songRequest.title, artist = songRequest.artist, link = songRequest.link, karaoke = karaoke.get(), user = user, sequence = songCount))
         }
 
         return ResponseEntity.ok().build()
