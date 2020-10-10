@@ -59,6 +59,10 @@ alter table songs
     add constraint karaoke_fk
         foreign key (karaoke_id) references karaokes;
 
+alter table songs
+    add constraint unique_songs_karaoke
+        unique (user_id, karaoke_id);
+
 alter table karaokes
     add constraint current_song_fk
         foreign key (current_song_id) references songs;
